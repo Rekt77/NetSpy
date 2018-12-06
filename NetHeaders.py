@@ -138,3 +138,36 @@ class DNSheader():
         print("Questions: "+self.Questions, " Answer_RRs: "+self.Answer_RRs)
         print("Authority_RRs: "+self.Authority_RRs, " Additional_RRs: "+self.Additional_RRs)
 
+class SMTPheader():
+    isServer=False
+    isClient=False
+
+    def __init__(self,smtp_header,portTuple):
+        self.tcp_port=portTuple
+        self.smtph = smtp_header.hex()
+    
+    def isFragmented(self):
+        if self.smtph.find("46726f6d") == 0:
+            self.Fragmented=True
+
+    def machineCheck(self):
+        if self.tcp_port[0] == SMTP:
+            self.isServer = True
+
+        if self.tcp_port[1] == SMTP:
+            self.isClient = True
+
+    def Display(self):
+        self.machineCheck()
+        print("[+] SMTP Header")
+        if self.isClient == True:
+            print("CLIENT: ", end="")
+
+        if self.isServer == True:
+            print("SERVER: ", end= "")
+
+        for each_line in self.smtph.split('0d0a'):
+            try:
+                print(bytearray.fromhex(each_line).decode())
+            except:
+                pass
