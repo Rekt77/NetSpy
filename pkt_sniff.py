@@ -22,10 +22,11 @@ except socket.error:
     sys.exit()
 
 while True:
+    print("\n")
     receivedPacket=rawSocket.recv(65565)
     #eth header : 6byte string*2,2byte string == 14byte
     #ip header : 12byte string,4byte string*2 == 20byte
-    #tcp header : 20 bytes string
+    #tcp header : originally, it's 32 bytes but we use only 20 bytes
     ethernet_header = Ethernet(receivedPacket[0:14])
     ip_header = IPheader(receivedPacket[14:34])
 
@@ -45,9 +46,17 @@ while True:
             http_header.Display()
             HeaderDisplay("HTTP",receivedPacket[54:])
 
-        print("\n")
+        if tcp_header.SrcPort == SMTP or tcp_header.DstPort == SMTP:
+            smtp_header = SMTPheader(receivedPacket[54:],(tcp_header.SrcPort,tcp_header.DstPort))
+            smtp_header.Display()
+            HeaderDisplay("SMTP",receivedPacket[54:])
 
     elif ip_header.Proto == UDP:
+        ethernet_header.Display()
+        HeaderDisplay("Ether",receivedPacket[0:14])
+
+        ip_header.Display()
+        HeaderDisplay("IP",receivedPacket[14:34])
         udp_header=UDPheader(receivedPacket[34:42])
         udp_header.Display()
         HeaderDisplay("UDP",receivedPacket[34:42])
@@ -55,4 +64,5 @@ while True:
             dns_header = DNSheader(receivedPacket[42:54])
             dns_header.Display()
             print(DNSRecord.parse(receivedPacket[42:]))
-
+            HeaderDisplay("DNS",receivedPacket[42:])
+    print("\n")
