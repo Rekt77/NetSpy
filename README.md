@@ -1,14 +1,13 @@
 # NetSpy
-- Network Packet capturing application written in python
+- Network Packet sniffer written in python
 - Analyze each layers of packet 
 
 # Dependencies
 - sudo pip install dnslib; https://github.com/paulchakravarti/dnslib
 
 # Warning
-- Version- Python 3.6.5
+- Version - Python 3.6.5
 - Test OS - Ubuntu 18.0.4
-
 - Run in Linux only
 - Need root permission
 
