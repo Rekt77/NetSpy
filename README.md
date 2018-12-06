@@ -13,7 +13,10 @@
 - Need root permission
 
 # Screenshots
-![](https://github.com/Rekt77/NetSpy/blob/master/ETH_IP_TCP.png.png)
-![](https://github.com/Rekt77/NetSpy/blob/master/HTTP_RES.png)
-![](https://github.com/Rekt77/NetSpy/blob/master/HTTP_REQ.png)
-![](https://github.com/Rekt77/NetSpy/blob/master/UDP_DNS.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/ETH_IP_TCP.png.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/HTTP_RES.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/HTTP_REQ.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/UDP_DNS.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/SMTP_1.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/SMTP_2.png)
+![](https://github.com/Rekt77/NetSpy/blob/master/img/SMTP_3.png)
