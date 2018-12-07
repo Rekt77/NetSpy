@@ -1,7 +1,7 @@
 import binascii
 from struct import *
 from dnslib import *
-form NetUtils import *
+from NetUtils import *
 import string
 
 TCP = '06'
