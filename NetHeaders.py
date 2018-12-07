@@ -174,7 +174,6 @@ class SMTPheader():
             except:
                 pass
 
-            
 class BitTorrentheader():
     isHandShake = False
     Length =""
