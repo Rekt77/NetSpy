@@ -2,6 +2,7 @@ import binascii
 from struct import *
 from dnslib import *
 import string
+from NetHeaders import *
 
 TCP = '06'
 UDP = '11'
@@ -171,3 +172,32 @@ class SMTPheader():
                 print(bytearray.fromhex(each_line).decode())
             except:
                 pass
+
+            
+class BitTorrentheader():
+    isHandShake = False
+    Length =""
+    Proto ="Bit Torrent"
+    ExtensionBytes = ""
+    SHA1 = ""
+    PeerID = ""
+
+    def __init__(self,bittorrent_header):
+        self.bith = bittorrent_header.hex()
+        self.HandShake()
+        if self.isHandShake == True:
+            self.Length = self.bith[0:2]
+            self.Proto = bytearray.fromhex(self.bith[2:40]).decode()
+            self.ExtensionBytes = self.bith[40:56]
+            self.SHA1 = self.bith[56:96]
+            self.PeerID = self.bith[96:116]
+
+    def HandShake(self):
+        if self.bith[2:40] == "426974546f7272656e742070726f746f636f6c":
+            self.isHandShake=True
+
+    def Display(self):
+        print("[+] BitTorrent Header")
+        print("Length: "+self.Length, " Proto: "+self.Proto)
+        print("Extension: "+self.ExtensionBytes, " SHA1: "+self.SHA1)
+        print("Peer ID: "+self.PeerID)

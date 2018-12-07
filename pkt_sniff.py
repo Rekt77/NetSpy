@@ -26,37 +26,61 @@ while True:
     receivedPacket=rawSocket.recv(65565)
     #eth header : 6byte string*2,2byte string == 14byte
     #ip header : 12byte string,4byte string*2 == 20byte
-    #tcp header : originally, it's 32 bytes but we use only 20 bytes
+    #tcp header : optionaly, it's 32 bytes but normaly it's 20 bytes
+
     ethernet_header = Ethernet(receivedPacket[0:14])
     ip_header = IPheader(receivedPacket[14:34])
+    ethLength = 14
+    iphLength = 34
+
+    
 
     if ip_header.Proto == TCP:
-        tcp_header = TCPheader(receivedPacket[34:54])
         ethernet_header.Display()
-        HeaderDisplay("Ether",receivedPacket[0:14])
+        HeaderDisplay("Ether",receivedPacket[0:ethLength])
 
         ip_header.Display()
-        HeaderDisplay("IP",receivedPacket[14:34])
+        HeaderDisplay("IP",receivedPacket[ethLength:iphLength])
 
+        tcp_header = TCPheader(receivedPacket[iphLength:54])
+        tcphLength = int(iphLength+int(tcp_header.HeaderLength,16)/4)
         tcp_header.Display()
-        HeaderDisplay("TCP",receivedPacket[34:54])
-
+        HeaderDisplay("TCP",receivedPacket[iphLength:tcphLength])
         if tcp_header.SrcPort == HTTP or tcp_header.DstPort == HTTP:
-            http_header = HTTPheader(receivedPacket[54:])
-            http_header.Display()
-            HeaderDisplay("HTTP",receivedPacket[54:])
+            try:
+                http_header = HTTPheader(receivedPacket[tcphLength:])
+                http_header.Display()
+                HeaderDisplay("HTTP",receivedPacket[tcphLength:])
+            except:
+                pass
 
         if tcp_header.SrcPort == SMTP or tcp_header.DstPort == SMTP:
-            smtp_header = SMTPheader(receivedPacket[54:],(tcp_header.SrcPort,tcp_header.DstPort))
-            smtp_header.Display()
-            HeaderDisplay("SMTP",receivedPacket[54:])
+            try:
+                smtp_header = SMTPheader(receivedPacket[tcphLength:],(tcp_header.SrcPort,tcp_header.DstPort))
+                smtp_header.Display()
+                HeaderDisplay("SMTP",receivedPacket[tcphLength:])
+            except:
+                pass
+
+        if receivedPacket[tcphLength+1:tcphLength+20].hex() == "426974546f7272656e742070726f746f636f6c":
+            bit_header = BitTorrentheader(receivedPacket[tcphLength:])
+            bit_header.Display()
+            bit_seqs.append(int(tcp_header.Seqnum,16) + len(receivedPacket[tcphLength:]))
+            HeaderDisplay("BitTorrent",receivedPacket[tcphLength:])
+        
+        if int(tcp_header.ACKnum,16) in bit_seqs:
+            bit_header = BitTorrentheader(receivedPacket[tcphLength:])
+            bit_header.Display()
+            HeaderDisplay("BitTorrent",receivedPacket[tcphLength:])
+
+
 
     elif ip_header.Proto == UDP:
         ethernet_header.Display()
-        HeaderDisplay("Ether",receivedPacket[0:14])
+        HeaderDisplay("Ether",receivedPacket[0:ethLength])
 
         ip_header.Display()
-        HeaderDisplay("IP",receivedPacket[14:34])
+        HeaderDisplay("IP",receivedPacket[ethLength:iphLength])
         udp_header=UDPheader(receivedPacket[34:42])
         udp_header.Display()
         HeaderDisplay("UDP",receivedPacket[34:42])
@@ -66,3 +90,4 @@ while True:
             print(DNSRecord.parse(receivedPacket[42:]))
             HeaderDisplay("DNS",receivedPacket[42:])
     print("\n")
+
