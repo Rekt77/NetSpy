@@ -1,6 +1,7 @@
 import binascii
 from struct import *
 from dnslib import *
+from NetUtils import *
 import string
 from NetHeaders import *
 
